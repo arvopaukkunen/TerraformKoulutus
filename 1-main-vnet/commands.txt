@@ -1,7 +1,13 @@
+## if AD rights
+## az login --tenant 22d6e4ed-d2af-4ad8-b6f4-d1d80f1e7004
+## simple interactive login (opens web page)
+az login
+
+
 # First we are going to deploy resources in our networking subscription
 # Be sure to select the networking subscription for your subname
 az account show
-az account set --subscription SUB_NAME
+az account set --subscription 86db547a-830e-4496-8460-0a7213575091 #SUB_NAME
 
 terraform init
 terraform plan -var resource_group_name=main-vnet -out vnet.tfplan
