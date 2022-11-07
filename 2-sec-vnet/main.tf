@@ -27,22 +27,22 @@ terraform {
 
 variable "sec_resource_group_name" {
   type    = string
-  default = "security"
+  default = "vtt-security"
 }
 
 variable "location" {
   type    = string
-  default = "eastus"
+  default = "westeurope"
 }
 
 variable "vnet_cidr_range" {
   type    = string
-  default = "10.1.0.0/16"
+  default = "10.2.0.0/16"
 }
 
 variable "sec_subnet_prefixes" {
   type    = list(string)
-  default = ["10.1.0.0/24", "10.1.1.0/24"]
+  default = ["10.2.0.0/24", "10.2.1.0/24"]
 }
 
 variable "sec_subnet_names" {
@@ -86,8 +86,8 @@ module "vnet-sec" {
   nsg_ids             = {}
 
   tags = {
-    environment = "security"
-    costcenter  = "security"
+    environment = "vttsecurity"
+    costcenter  = "vttsecurity"
 
   }
 
@@ -96,26 +96,26 @@ module "vnet-sec" {
 
 ## AZURE AD SP ##
 
-resource "random_password" "vnet_peering" {
+resource "random_password" "vtt-vnet_peering" {
   length  = 16
   special = true
 }
 
-resource "azuread_application" "vnet_peering" {
-  display_name = "vnet-peer"
+resource "azuread_application" "vtt-vnet_peering" {
+  display_name = "vnet-peer2"
 }
 
-resource "azuread_service_principal" "vnet_peering" {
-  application_id = azuread_application.vnet_peering.application_id
+resource "azuread_service_principal" "vtt-vnet_peering" {
+  application_id = azuread_application.vtt-vnet_peering.application_id
 }
 
-resource "azuread_service_principal_password" "vnet_peering" {
-  service_principal_id = azuread_service_principal.vnet_peering.id
-  value                = random_password.vnet_peering.result
+resource "azuread_service_principal_password" "vtt-vnet_peering" {
+  service_principal_id = azuread_service_principal.vtt-vnet_peering.id
+  value                = random_password.vtt-vnet_peering.result
   end_date_relative    = "17520h"
 }
 
-resource "azurerm_role_definition" "vnet-peering" {
+resource "azurerm_role_definition" "vtt-vnet-peering" {
   name  = "allow-vnet-peering"
   scope = data.azurerm_subscription.current.id
 
@@ -131,8 +131,8 @@ resource "azurerm_role_definition" "vnet-peering" {
 
 resource "azurerm_role_assignment" "vnet" {
   scope              = module.vnet-sec.vnet_id
-  role_definition_id = azurerm_role_definition.vnet-peering.role_definition_resource_id
-  principal_id       = azuread_service_principal.vnet_peering.id
+  role_definition_id = azurerm_role_definition.vtt-vnet-peering.role_definition_resource_id
+  principal_id       = azuread_service_principal.vtt-vnet_peering.id
 }
 
 #############################################################################
@@ -146,9 +146,9 @@ export TF_VAR_sec_vnet_id=${module.vnet-sec.vnet_id}
 
 export TF_VAR_sec_vnet_name=${module.vnet-sec.vnet_name}
 export TF_VAR_sec_sub_id=${data.azurerm_subscription.current.subscription_id}
-export TF_VAR_sec_client_id=${azuread_service_principal.vnet_peering.application_id}
-export TF_VAR_sec_principal_id=${azuread_service_principal.vnet_peering.id}
-export TF_VAR_sec_client_secret='${random_password.vnet_peering.result}'
+export TF_VAR_sec_client_id=${azuread_service_principal.vtt-vnet_peering.application_id}
+export TF_VAR_sec_principal_id=${azuread_service_principal.vtt-vnet_peering.id}
+export TF_VAR_sec_client_secret='${random_password.vtt-vnet_peering.result}'
 export TF_VAR_sec_resource_group=${var.sec_resource_group_name}
 export TF_VAR_sec_tenant_id=${data.azurerm_subscription.current.tenant_id}
 
@@ -162,9 +162,9 @@ $env:TF_VAR_sec_vnet_id="${module.vnet-sec.vnet_id}"
 
 $env:TF_VAR_sec_vnet_name="${module.vnet-sec.vnet_name}"
 $env:TF_VAR_sec_sub_id="${data.azurerm_subscription.current.subscription_id}"
-$env:TF_VAR_sec_client_id="${azuread_service_principal.vnet_peering.application_id}"
-$env:TF_VAR_sec_principal_id="${azuread_service_principal.vnet_peering.id}"
-$env:TF_VAR_sec_client_secret="${random_password.vnet_peering.result}"
+$env:TF_VAR_sec_client_id="${azuread_service_principal.vtt-vnet_peering.application_id}"
+$env:TF_VAR_sec_principal_id="${azuread_service_principal.vtt-vnet_peering.id}"
+$env:TF_VAR_sec_client_secret="${random_password.vtt-vnet_peering.result}"
 $env:TF_VAR_sec_resource_group="${var.sec_resource_group_name}"
 $env:TF_VAR_sec_tenant_id="${data.azurerm_subscription.current.tenant_id}"
 
@@ -184,11 +184,11 @@ output "vnet_name" {
 }
 
 output "service_principal_client_id" {
-  value = azuread_service_principal.vnet_peering.id
+  value = azuread_service_principal.vtt-vnet_peering.id
 }
 
 output "service_principal_client_secret" {
-  value = nonsensitive(random_password.vnet_peering.result)
+  value = nonsensitive(random_password.vtt-vnet_peering.result)
 }
 
 output "resource_group_name" {

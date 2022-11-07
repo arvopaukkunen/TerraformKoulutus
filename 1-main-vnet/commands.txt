@@ -7,8 +7,11 @@ az login
 # First we are going to deploy resources in our networking subscription
 # Be sure to select the networking subscription for your subname
 az account show
-az account set --subscription 86db547a-830e-4496-8460-0a7213575091 #SUB_NAME
+az account set --subscription "Visual Studio Ultimate ja MSDN" # 86db547a-830e-4496-8460-0a7213575091 #SUB_NAME
 
 terraform init
-terraform plan -var resource_group_name=main-vnet -out vnet.tfplan
+terraform plan -var resource_group_name=vtt-main-vnet -out vnet.tfplan
 terraform apply "vnet.tfplan"
+
+#muistiinpanot:
+#vnet_id = "/subscriptions/86db547a-830e-4496-8460-0a7213575091/resourceGroups/vtt-main-vnet/providers/Microsoft.Network/virtualNetworks/vtt-main-vnet"
