@@ -15,3 +15,7 @@ terraform apply tfvm.tfplan
 
 # Be sure to destroy this VM when you're done or at least deallocate the VM to
 # save on costs!
+
+Extraa:
+https://learn.microsoft.com/en-us/azure/virtual-machines/linux/use-remote-desktop?tabs=azure-cli
+ssh 51.144.148.42
