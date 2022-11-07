@@ -17,16 +17,17 @@ terraform {
 
 variable "resource_group_name" {
   type = string
+  default = "vtt-state"
 }
 
 variable "location" {
   type    = string
-  default = "eastus"
+  default = "westeurope"
 }
 
 variable "naming_prefix" {
   type    = string
-  default = "itma"
+  default = "vtt"
 }
 
 ##################################################################################
