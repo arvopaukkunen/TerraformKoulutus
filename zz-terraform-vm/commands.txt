@@ -19,3 +19,9 @@ terraform apply tfvm.tfplan
 Extraa:
 https://learn.microsoft.com/en-us/azure/virtual-machines/linux/use-remote-desktop?tabs=azure-cli
 ssh 51.144.148.42
+
+#########
+terraform plan -destroy -var resource_group_name=terraform-vm
+terraform apply -destroy -var resource_group_name=terraform-vm
+
+terraform plan -destroy -var resource_group_name=tfstate

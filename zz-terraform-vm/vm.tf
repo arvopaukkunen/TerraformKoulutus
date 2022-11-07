@@ -63,7 +63,24 @@ module "terraform-vm" {
     storage_account_name = azurerm_storage_account.sa.name
     access_key           = azurerm_storage_account.sa.primary_access_key
   }))
+###########
+#module "terraform-vm" {
+#  source                        = "Azure/compute/azurerm"
+#  version                       = "~> 3.0"
+#  resource_group_name           = azurerm_resource_group.vnet_main.name
+#  vm_os_simple                  = "UbuntuServer"
+#  public_ip_dns                 = [local.vm_public_dns]
+#  vnet_subnet_id                = module.vnet-main.vnet_subnets[0]
+#  remote_port                   = "22"
+#  admin_password                = random_password.terraform_vm.result
+#  enable_ssh_key                = false
+#  delete_os_disk_on_termination = true
 
+ # custom_data = base64encode(templatefile("${path.module}/terraform-vm.tmpl", {
+ #   storage_account_name = azurerm_storage_account.sa.name
+ #   access_key           = azurerm_storage_account.sa.primary_access_key
+ # }))
+ ##############
 
   depends_on = [azurerm_resource_group.vnet_main]
 }

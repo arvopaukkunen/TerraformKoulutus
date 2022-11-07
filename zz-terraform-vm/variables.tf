@@ -1,6 +1,6 @@
 variable "resource_group_name" {
   type    = string
-  default = "terraform-vm"
+  default = "vtt-terraform-vm"
 }
 
 variable "location" {
