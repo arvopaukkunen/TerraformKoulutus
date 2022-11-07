@@ -22,3 +22,9 @@ terraform apply "state.tfplan"
 
 # Next we're going to copy the backend-config.txt file to the 1-main-vnet
 # Head over to the 5-remote-state directory to continue
+
+# cloud shell commands:
+terraform plan -var resource_group_name=vtt-state -out state.tfplan
+terraform apply state.tfplan
+
+terraform init -backend-config=backend-config.txt
